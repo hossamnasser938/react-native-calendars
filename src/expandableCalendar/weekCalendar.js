@@ -31,7 +31,8 @@ class WeekCalendar extends Component {
     /** whether to have shadow/elevation for the calendar */
     allowShadow: PropTypes.bool,
     /** whether to hide the names of the week days */
-    hideDayNames: PropTypes.bool
+    hideDayNames: PropTypes.bool,
+    renderDay: PropTypes.func,
   };
 
   static defaultProps = {
@@ -159,7 +160,7 @@ class WeekCalendar extends Component {
   }
 
   renderItem = ({item}) => {
-    const {calendarWidth, style, onDayPress, ...others} = this.props;
+    const {calendarWidth, style, onDayPress, renderDay, ...others} = this.props;
 
     return (
       <Week
@@ -169,6 +170,7 @@ class WeekCalendar extends Component {
         style={[{width: calendarWidth || this.containerWidth}, style]}
         markedDates={this.getMarkedDates()}
         onDayPress={onDayPress || this.onDayPress}
+        renderDay={renderDay}
       />
     );
   }
@@ -193,9 +195,9 @@ class WeekCalendar extends Component {
       firstDay
     });
     return (
-      <View testID={this.props.testID} style={[allowShadow && this.style.containerShadow, !hideDayNames && {paddingBottom: 6}]}>
+      <View testID={this.props.testID} style={[allowShadow && this.style.containerShadow, {flex: 1}]}>
         {!hideDayNames &&
-          <View style={[this.style.week, {marginTop: 12, marginBottom: -2}]}>
+          <View style={[this.style.week, {marginTop: 12}]}>
             {/* {this.props.weekNumbers && <Text allowFontScaling={false} style={this.style.dayHeader}></Text>} */}
             {weekDaysNames.map((day, idx) => (
               <Text

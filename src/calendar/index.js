@@ -15,7 +15,7 @@ import BasicDay from './day/basic';
 import Day from './day/index';
 
 //Fallback for react-native-web or when RN version is < 0.44
-const {View, ViewPropTypes} = ReactNative;
+const {View, ScrollView, ViewPropTypes, StyleSheet} = ReactNative;
 const viewPropTypes =
   typeof document !== 'undefined' ? PropTypes.shape({style: PropTypes.object}) : ViewPropTypes || View.propTypes;
 const EmptyArray = [];
@@ -86,7 +86,13 @@ class Calendar extends Component {
       currentMonth: props.current ? parseDate(props.current) : XDate()
     };
 
-    this.shouldComponentUpdate = shouldComponentUpdate;
+    // this.shouldComponentUpdate = shouldComponentUpdate;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.current !== this.props.current) {
+      this.updateMonth(new XDate(this.props.current));
+    }
   }
   
   addMonth = count => {
@@ -263,7 +269,9 @@ class Calendar extends Component {
       weeks.push(this.renderWeek(days.splice(0, 7), weeks.length));
     }
 
-    return <View style={this.style.monthView}>{weeks}</View>;
+    return (
+      <View style={this.style.monthView}>{weeks}</View>
+    );
   }
 
   renderHeader() {
@@ -302,16 +310,16 @@ class Calendar extends Component {
     const gestureProps = enableSwipeMonths ? {onSwipe: (direction, state) => this.onSwipe(direction, state)} : {};
 
     return (
-      <GestureComponent {...gestureProps}>
-        <View
-          style={[this.style.container, style]}
-          accessibilityElementsHidden={this.props.accessibilityElementsHidden} // iOS
-          importantForAccessibility={this.props.importantForAccessibility} // Android
+      <View
+        style={[this.style.container, style]}
+        accessibilityElementsHidden={this.props.accessibilityElementsHidden} // iOS
+        importantForAccessibility={this.props.importantForAccessibility} // Android
         >
           {this.renderHeader()}
-          {this.renderMonth()}
-        </View>
-      </GestureComponent>
+          <ScrollView>
+            {this.renderMonth()}
+          </ScrollView>
+      </View>
     );
   }
 }

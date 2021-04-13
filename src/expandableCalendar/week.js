@@ -19,7 +19,8 @@ class Week extends Component {
   static propTypes = {
     ...Calendar.propTypes,
     /** the current date */
-    current: PropTypes.any
+    current: PropTypes.any,
+    renderDay: PropTypes.func
   };
 
   constructor(props) {
@@ -94,7 +95,7 @@ class Week extends Component {
   // }
   
   renderDay(day, id) {
-    const {current, hideExtraDays} = this.props;
+    const {current, hideExtraDays, renderDay} = this.props;
     const dayProps = extractComponentProps(Day, this.props);
 
     // hide extra days
@@ -114,6 +115,7 @@ class Week extends Component {
           onPress={this.props.onDayPress}
           onLongPress={this.props.onDayPress}
         />
+        {renderDay && renderDay(day)}
       </View>
     );
   }

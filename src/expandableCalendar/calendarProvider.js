@@ -37,7 +37,9 @@ class CalendarProvider extends Component {
     /** Today button's style */
     todayButtonStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.array]),
     /** The opacity for the disabled today button (0-1) */
-    disabledOpacity: PropTypes.number
+    disabledOpacity: PropTypes.number,
+    /** A handler of today button */
+    todayOnPress: PropTypes.func,
   }
 
   constructor(props) {
@@ -144,6 +146,10 @@ class CalendarProvider extends Component {
   }
 
   onTodayPress = () => {
+    const {todayOnPress} = this.props;
+    if (todayOnPress) {
+      todayOnPress();
+    }
     const today = XDate().toString('yyyy-MM-dd');
     this.setDate(today, UPDATE_SOURCES.TODAY_PRESS);
   }
