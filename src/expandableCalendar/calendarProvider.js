@@ -39,7 +39,9 @@ class CalendarProvider extends Component {
     /** The opacity for the disabled today button (0-1) */
     disabledOpacity: PropTypes.number,
     /** A handler of today button */
-    todayOnPress: PropTypes.func,
+    todayHandler: PropTypes.func,
+    /** A flag that when changes indicates that we should invoke today handler */
+    shouldInvokeTodayHandlerFlag: PropTypes.bool,
   }
 
   constructor(props) {
@@ -59,6 +61,9 @@ class CalendarProvider extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.date !== this.props.date) {
       this.setDate(this.props.date, UPDATE_SOURCES.PROP_UPDATE);
+    }
+    if (prevProps.shouldInvokeTodayHandlerFlag !== this.props.shouldInvokeTodayHandlerFlag) {
+      this.onTodayPress();
     }
   }
 
@@ -146,9 +151,9 @@ class CalendarProvider extends Component {
   }
 
   onTodayPress = () => {
-    const {todayOnPress} = this.props;
-    if (todayOnPress) {
-      todayOnPress();
+    const {todayHandler} = this.props;
+    if (todayHandler) {
+      todayHandler();
     }
     const today = XDate().toString('yyyy-MM-dd');
     this.setDate(today, UPDATE_SOURCES.TODAY_PRESS);

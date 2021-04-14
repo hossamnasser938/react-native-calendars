@@ -316,7 +316,7 @@ class Calendar extends Component {
         importantForAccessibility={this.props.importantForAccessibility} // Android
         >
           {this.renderHeader()}
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             {this.renderMonth()}
           </ScrollView>
       </View>
