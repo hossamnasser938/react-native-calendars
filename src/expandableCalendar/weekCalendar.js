@@ -56,7 +56,7 @@ class WeekCalendar extends Component {
   componentDidUpdate(prevProps) {
     const {updateSource, date} = this.props.context;
 
-    if (date !== prevProps.context.date && updateSource !== UPDATE_SOURCES.WEEK_SCROLL) {
+    if (date !== prevProps.context.date && updateSource !== UPDATE_SOURCES.WEEK_SCROLL || prevProps.calendarWidth !== this.props.calendarWidth) {
       this.setState({items: this.getDatesArray()});
       this.list.current.scrollToIndex({animated: false, index: NUMBER_OF_PAGES});
     }
