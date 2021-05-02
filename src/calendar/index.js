@@ -86,7 +86,7 @@ class Calendar extends Component {
       currentMonth: props.current ? parseDate(props.current) : XDate()
     };
 
-    // this.shouldComponentUpdate = shouldComponentUpdate;
+    this.shouldComponentUpdate = shouldComponentUpdate;
   }
 
   componentDidUpdate(prevProps) {
