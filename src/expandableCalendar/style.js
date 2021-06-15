@@ -151,6 +151,19 @@ export default function styleConstructor(theme = {}) {
       marginLeft: appStyle.todayButtonPosition === 'right' ? 7 : undefined,
       marginRight: appStyle.todayButtonPosition === 'right' ? undefined : 7
     },
+    arrow: {
+      padding: 10,
+      ...appStyle.arrowStyle
+    },
+    arrowImage: {
+      tintColor: appStyle.arrowColor,
+      ...Platform.select({
+        web: {
+          width: appStyle.arrowWidth,
+          height: appStyle.arrowHeight
+        }
+      })
+    },
     ...(theme[STYLESHEET_ID] || {})
   });
 }

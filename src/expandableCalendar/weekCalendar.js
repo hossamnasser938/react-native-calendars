@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, {Component} from 'react';
-import {FlatList, View, Text} from 'react-native';
+import {FlatList, View, Text, TouchableOpacity, Image, Platform} from 'react-native';
 import {Map} from 'immutable';
 import PropTypes from 'prop-types';
 import XDate from 'xdate';
@@ -33,6 +33,7 @@ class WeekCalendar extends Component {
     /** whether to hide the names of the week days */
     hideDayNames: PropTypes.bool,
     renderDay: PropTypes.func,
+    renderHeader: PropTypes.func,
   };
 
   static defaultProps = {
@@ -111,6 +112,7 @@ class WeekCalendar extends Component {
   }
 
   onScroll = ({nativeEvent: {contentOffset: {x}}}) => {
+    console.log('x', x);
     const newPage = Math.round(x / this.containerWidth);
 
     if (this.page !== newPage) {
@@ -185,8 +187,34 @@ class WeekCalendar extends Component {
 
   keyExtractor = (item, index) => index.toString();
 
+  onPressLeft = () => {
+    this.page = this.page - 1;
+    this.list.current.scrollToIndex({animated: false, index: this.page});
+  };
+  onPressRight = () => {
+    this.page = this.page + 1;
+    this.list.current.scrollToIndex({animated: false, index: this.page});
+  };
+
+  renderArrow(direction) {
+    const {arrowColor} = this.props;
+    const isLeft = direction === 'left';
+    const onPress = isLeft ? this.onPressLeft : this.onPressRight;
+    const imageSource = isLeft ? require('../calendar/img/previous.png') : require('../calendar/img/next.png');
+    const renderArrowDirection = isLeft ? 'left' : 'right';
+
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={this.style.arrow}
+      >
+          <Image source={imageSource} style={[this.style.arrowImage, {tintColor: arrowColor}]} />
+      </TouchableOpacity>
+    );
+  }
+
   render() {
-    const {allowShadow, firstDay, hideDayNames, current, context} = this.props;
+    const {allowShadow, firstDay, hideDayNames, current, context, renderHeader} = this.props;
     const {items} = this.state;
     let weekDaysNames = weekDayNames(firstDay);
     const extraData = Map({
@@ -196,6 +224,11 @@ class WeekCalendar extends Component {
     });
     return (
       <View testID={this.props.testID} style={[allowShadow && this.style.containerShadow, {flex: 1}]}>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        {Platform.OS === 'windows' && this.renderArrow('left')}
+        {renderHeader()}
+        {Platform.OS === 'windows' && this.renderArrow('right')}
+        </View>
         {!hideDayNames &&
           <View style={[this.style.week, {marginTop: 12}]}>
             {/* {this.props.weekNumbers && <Text allowFontScaling={false} style={this.style.dayHeader}></Text>} */}
