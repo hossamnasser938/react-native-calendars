@@ -11,7 +11,6 @@ import Week from '../expandableCalendar/week';
 import asCalendarConsumer from './asCalendarConsumer';
 import {weekDayNames} from '../dateutils';
 
-
 const commons = require('./commons');
 const UPDATE_SOURCES = commons.UPDATE_SOURCES;
 const NUMBER_OF_PAGES = 2; // must be a positive number
@@ -33,13 +32,13 @@ class WeekCalendar extends Component {
     /** whether to hide the names of the week days */
     hideDayNames: PropTypes.bool,
     renderDay: PropTypes.func,
-    renderHeader: PropTypes.func,
+    renderHeader: PropTypes.func
   };
 
   static defaultProps = {
     firstDay: 0,
     allowShadow: true
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -57,7 +56,10 @@ class WeekCalendar extends Component {
   componentDidUpdate(prevProps) {
     const {updateSource, date} = this.props.context;
 
-    if (date !== prevProps.context.date && updateSource !== UPDATE_SOURCES.WEEK_SCROLL || prevProps.calendarWidth !== this.props.calendarWidth) {
+    if (
+      (date !== prevProps.context.date && updateSource !== UPDATE_SOURCES.WEEK_SCROLL) ||
+      prevProps.calendarWidth !== this.props.calendarWidth
+    ) {
       this.setState({items: this.getDatesArray()});
       this.list.current.scrollToIndex({animated: false, index: NUMBER_OF_PAGES});
     }
@@ -88,7 +90,7 @@ class WeekCalendar extends Component {
     // leave the current date in the visible week as is
     const dd = weekIndex === 0 ? d : d.addDays(firstDay - dayOfTheWeek);
     const newDate = dd.addWeeks(weekIndex);
-    return  newDate.toString('yyyy-MM-dd');
+    return newDate.toString('yyyy-MM-dd');
   }
 
   getMarkedDates() {
@@ -107,11 +109,15 @@ class WeekCalendar extends Component {
     return {[context.date]: {selected: true}};
   }
 
-  onDayPress = (value) => {
+  onDayPress = value => {
     _.invoke(this.props.context, 'setDate', value.dateString, UPDATE_SOURCES.DAY_PRESS);
-  }
+  };
 
-  onScroll = ({nativeEvent: {contentOffset: {x}}}) => {
+  onScroll = ({
+    nativeEvent: {
+      contentOffset: {x}
+    }
+  }) => {
     console.log('x', x);
     const newPage = Math.round(x / this.containerWidth);
 
@@ -133,7 +139,7 @@ class WeekCalendar extends Component {
         this.setState({items: [...items]});
       }
     }
-  }
+  };
 
   onMomentumScrollEnd = () => {
     const {items} = this.state;
@@ -159,7 +165,7 @@ class WeekCalendar extends Component {
         this.setState({items: [...items]});
       }, 100);
     }
-  }
+  };
 
   renderItem = ({item}) => {
     const {calendarWidth, style, onDayPress, renderDay, ...others} = this.props;
@@ -175,7 +181,7 @@ class WeekCalendar extends Component {
         renderDay={renderDay}
       />
     );
-  }
+  };
 
   getItemLayout = (data, index) => {
     return {
@@ -183,7 +189,7 @@ class WeekCalendar extends Component {
       offset: this.containerWidth * index,
       index
     };
-  }
+  };
 
   keyExtractor = (item, index) => index.toString();
 
@@ -204,11 +210,8 @@ class WeekCalendar extends Component {
     const renderArrowDirection = isLeft ? 'left' : 'right';
 
     return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={this.style.arrow}
-      >
-          <Image source={imageSource} style={[this.style.arrowImage, {tintColor: arrowColor}]} />
+      <TouchableOpacity onPress={onPress} style={this.style.arrow}>
+        <Image source={imageSource} style={[this.style.arrowImage, {tintColor: arrowColor}]} />
       </TouchableOpacity>
     );
   }
@@ -225,11 +228,11 @@ class WeekCalendar extends Component {
     return (
       <View testID={this.props.testID} style={[allowShadow && this.style.containerShadow, {flex: 1}]}>
         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-        {Platform.OS === 'windows' && this.renderArrow('left')}
-        {renderHeader()}
-        {Platform.OS === 'windows' && this.renderArrow('right')}
+          {Platform.OS === 'windows' && this.renderArrow('left')}
+          {renderHeader && renderHeader()}
+          {Platform.OS === 'windows' && this.renderArrow('right')}
         </View>
-        {!hideDayNames &&
+        {!hideDayNames && (
           <View style={[this.style.week, {marginTop: 12}]}>
             {/* {this.props.weekNumbers && <Text allowFontScaling={false} style={this.style.dayHeader}></Text>} */}
             {weekDaysNames.map((day, idx) => (
@@ -245,7 +248,8 @@ class WeekCalendar extends Component {
                 {day}
               </Text>
             ))}
-          </View>}
+          </View>
+        )}
         <FlatList
           ref={this.list}
           data={items}
